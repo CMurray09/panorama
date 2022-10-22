@@ -1,33 +1,33 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import {UserModule} from "./user/user.module";
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ImageViewerComponent } from './image-viewer/image-viewer.component';
 import { AngularFireModule } from "@angular/fire/compat";
-import { environment } from "../environments/environment";
-import { AngularFireAuthModule } from "@angular/fire/compat/auth";
-import { LoginComponent } from './user/login/login.component';
-import { RegisterComponent } from './user/register/register.component';
-import { AuthModalComponent } from './user/auth-modal/auth-modal/auth-modal.component';
-import { NavComponent } from './nav/nav/nav.component';
-import { NotFoundComponent } from './not-found/not-found/not-found.component';
+import { environment } from "src/environments/environment";
+import {AngularFireAuthModule} from "@angular/fire/compat/auth";
+import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
+import {AngularFireStorageModule} from "@angular/fire/compat/storage";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {ImageViewerComponent} from "./image-viewer/image-viewer.component";
+import {NavComponent} from "./nav/nav/nav.component";
 
 @NgModule({
   declarations: [
     AppComponent,
     ImageViewerComponent,
-    LoginComponent,
-    RegisterComponent,
-    AuthModalComponent,
-    NavComponent,
-    NotFoundComponent
+    NavComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
+    UserModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    AngularFirestoreModule,
+    AppRoutingModule,
+    AngularFireStorageModule,
+    BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
