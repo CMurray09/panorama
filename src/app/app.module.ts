@@ -12,12 +12,22 @@ import {AngularFireStorageModule} from "@angular/fire/compat/storage";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ImageViewerComponent} from "./image-viewer/image-viewer.component";
 import {NavComponent} from "./nav/nav/nav.component";
+import { DeleteComponent } from './video/delete/delete.component';
+import { EditComponent } from './video/edit/edit.component';
+import { ManageComponent } from './video/manage/manage.component';
+import { PipesComponent } from './video/pipes/pipes.component';
+import { UploadComponent } from './video/upload/upload.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ImageViewerComponent,
-    NavComponent
+    NavComponent,
+    DeleteComponent,
+    EditComponent,
+    ManageComponent,
+    PipesComponent,
+    UploadComponent
   ],
   imports: [
     BrowserModule,
