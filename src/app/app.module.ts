@@ -9,25 +9,24 @@ import { environment } from "src/environments/environment";
 import {AngularFireAuthModule} from "@angular/fire/compat/auth";
 import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
 import {AngularFireStorageModule} from "@angular/fire/compat/storage";
+import { ToastrModule } from "ngx-toastr";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ImageViewerComponent} from "./image-viewer/image-viewer.component";
-import {NavComponent} from "./nav/nav/nav.component";
-import { DeleteComponent } from './video/delete/delete.component';
-import { EditComponent } from './video/edit/edit.component';
-import { ManageComponent } from './video/manage/manage.component';
-import { PipesComponent } from './video/pipes/pipes.component';
-import { UploadComponent } from './video/upload/upload.component';
+import {ClipComponent} from "./clip/clip.component";
+import {NotFoundComponent} from "./not-found/not-found.component";
+import {ClipsListComponent} from "./clips-list/clips-list.component";
+import {FbTimestampPipe} from "./pipes/fb-timestamp.pipe";
+import {NavComponent} from "./nav/nav.component";
 
 @NgModule({
   declarations: [
     AppComponent,
-    ImageViewerComponent,
     NavComponent,
-    DeleteComponent,
-    EditComponent,
-    ManageComponent,
-    PipesComponent,
-    UploadComponent
+    ImageViewerComponent,
+    ClipComponent,
+    NotFoundComponent,
+    ClipsListComponent,
+    FbTimestampPipe
   ],
   imports: [
     BrowserModule,
@@ -38,6 +37,10 @@ import { UploadComponent } from './video/upload/upload.component';
     AppRoutingModule,
     AngularFireStorageModule,
     BrowserAnimationsModule,
+    ToastrModule.forRoot({
+      positionClass: 'toast-bottom-center',
+      preventDuplicates: true
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]
