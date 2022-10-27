@@ -12,6 +12,7 @@ import {combineLatest, forkJoin} from 'rxjs';
 import IClip from "../../models/clip.model";
 import {DocumentReference} from "@angular/fire/compat/firestore";
 import {FfmpegService} from "../../services/ffmpeg.service";
+import {NgxFileDropEntry} from "ngx-file-drop";
 
 @Component({
   selector: 'app-upload',
@@ -21,18 +22,19 @@ import {FfmpegService} from "../../services/ffmpeg.service";
 export class UploadComponent implements OnDestroy {
   isDragover: boolean = false;
   file: File | null = null;
-  isVideoDropped: boolean = false;
+  isMediaDropped: boolean = false;
   showAlert: boolean = false;
-  alertColour: string = 'blue';
+  alertColour: string = 'red';
   alertMsg: string = 'Please wait! Your clip is being uploaded.';
   inSubmission: boolean = false;
   percentage: number = 0;
   showPercentage: boolean = false;
   user: firebase.User | null = null;
   task?: AngularFireUploadTask;
-  screenshots: Array<string> = [];
-  selectedScreenshot: string = '';
+  image: string = '';
   screenshotTask?: AngularFireUploadTask;
+
+  public files: NgxFileDropEntry[] = [];
 
   title = new FormControl('', {
     validators: [
@@ -43,7 +45,7 @@ export class UploadComponent implements OnDestroy {
     nonNullable: true
   });
 
-  videoForm: FormGroup = new FormGroup({
+  mediaForm: FormGroup = new FormGroup({
     title: this.title
   })
 
@@ -61,29 +63,56 @@ export class UploadComponent implements OnDestroy {
     this.task?.cancel();
   }
 
-  async storeFile($event: Event): Promise<void> {
-    if (this.ffmpegService.isRunning) {
-      return;
+
+  async dropped(files: NgxFileDropEntry[]) {
+    this.files = files;
+    for (const droppedFile of files) {
+      // Is it a single file?
+      if (droppedFile.fileEntry.isFile) {
+        this.showAlert = false;
+        const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
+        fileEntry.file((file: File) => {
+          if (!file.type.includes('image/')) {
+            this.showAlert = true;
+            this.alertMsg = 'The dropped file is not an image'
+            this.files = [];
+            return;
+          }
+
+          this.title.setValue(file.name.replace(/\.[^/.]+$/, ''));
+          this.isMediaDropped = true;
+
+          // Here you can access the real file
+          console.log(droppedFile.relativePath, file);
+
+          /**
+           // You could upload it like this:
+           const formData = new FormData()
+           formData.append('logo', file, relativePath)
+
+           // Headers
+           const headers = new HttpHeaders({
+            'security-token': 'mytoken'
+          })
+
+           this.http.post('https://mybackend.com/api/upload/sanitize-and-save-logo', formData, { headers: headers, responseType: 'blob' })
+           .subscribe(data => {
+            // Sanitized logo returned from backend
+          })
+           **/
+
+        });
+      } else {
+        this.showAlert = true;
+        this.alertMsg = 'Something went wrong. Try again.'
+        this.files = [];
+        return;
+      }
     }
-
-    this.isDragover = false;
-    this.file = ($event as DragEvent).dataTransfer ?
-      ($event as DragEvent).dataTransfer?.files.item(0) ?? null :
-      ($event.target as HTMLInputElement).files?.item(0) ?? null;
-
-    if (!this.file || this.file.type !== 'media/mp4') {
-      return;
-    }
-    this.screenshots = await this.ffmpegService.getScreenshots(this.file);
-
-    this.selectedScreenshot = this.screenshots[0];
-
-    this.title.setValue(this.file.name.replace(/\.[^/.]+$/, ''));
-    this.isVideoDropped = true;
   }
 
-  async uploadFile(): Promise<void> {
-    this.videoForm.disable();
+  async uploadFile(file: File): Promise<void> {
+    this.mediaForm.disable();
     this.showAlert = true;
     this.alertColour = 'blue';
     this.alertMsg = 'Please wait! Your clip is being uploaded.';
@@ -93,7 +122,7 @@ export class UploadComponent implements OnDestroy {
     const clipFileName: string = uuidv4();
     const clipPath: string = `clips/${clipFileName}.mp4`;
     const screenshotBlob: Blob = await this.ffmpegService.blobFromURL(
-      this.selectedScreenshot
+      this.image
     );
     const screenshotPath: string = `screenshots/${clipFileName}.png`;
 
@@ -148,7 +177,7 @@ export class UploadComponent implements OnDestroy {
         }, 1000)
       },
       error: (error) => {
-        this.videoForm.enable();
+        this.mediaForm.enable();
         this.alertColour = 'red';
         this.alertMsg = 'Upload failed! Please try again later.';
         this.showPercentage = false;
