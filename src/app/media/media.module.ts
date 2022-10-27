@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { VideoRoutingModule } from './video-routing.module';
+import { MediaRoutingModule } from './media-routing.module';
 import { ManageComponent } from './manage/manage.component';
 import { UploadComponent } from './upload/upload.component';
 import {SharedModule} from "../shared/shared.module";
@@ -9,6 +9,7 @@ import {ReactiveFormsModule} from "@angular/forms";
 import { EditComponent } from './edit/edit.component';
 import { SafeURLPipe } from './pipes/safe-url.pipe';
 import { DeleteComponent } from './delete/delete.component';
+import {NgxFileDropModule} from "ngx-file-drop";
 
 
 @NgModule({
@@ -21,9 +22,10 @@ import { DeleteComponent } from './delete/delete.component';
   ],
   imports: [
     CommonModule,
-    VideoRoutingModule,
+    MediaRoutingModule,
     SharedModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxFileDropModule
   ]
 })
-export class VideoModule { }
+export class MediaModule { }

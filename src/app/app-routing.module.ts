@@ -19,7 +19,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    loadChildren: async () => (await import('./media/video.module')).VideoModule
+    loadChildren: async () => (await import('./media/media.module')).MediaModule
   },
   {
     path: '**',
