@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {createFFmpeg, FFmpeg} from '@ffmpeg/ffmpeg';
+import {NgxFileDropEntry} from "ngx-file-drop";
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,12 @@ export class FfmpegService {
 
     await this.ffmpeg.load();
     this.isReady = true;
+  }
+
+  async createBlob(file: NgxFileDropEntry) {
+    const imageBlob: Blob = new Blob([file.relativePath]);
+    const imageURL: string = URL.createObjectURL(imageBlob);
+    return imageURL;
   }
 
   async blobFromURL(url: string): Promise<Blob> {

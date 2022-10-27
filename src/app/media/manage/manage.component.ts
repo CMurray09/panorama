@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Router, ActivatedRoute, Params} from '@angular/router';
 import {ClipService} from "src/app/services/clip.service";
-import IClip from "src/app/models/clip.model";
+import Image from "src/app/models/clip.model";
 import {ModalService} from "src/app/services/modal.service";
 import {BehaviorSubject} from "rxjs";
 
@@ -12,8 +12,8 @@ import {BehaviorSubject} from "rxjs";
 })
 export class ManageComponent implements OnInit {
   videoOrder: string = '1';
-  clips: Array<IClip> = [];
-  activeClip: IClip | null = null;
+  clips: Array<Image> = [];
+  activeClip: Image | null = null;
   sort$: BehaviorSubject<string>;
 
   constructor(
@@ -51,19 +51,19 @@ export class ManageComponent implements OnInit {
     });
   }
 
-  openEditModal($event: Event, clip: IClip): void {
+  openEditModal($event: Event, clip: Image): void {
     $event.preventDefault();
     this.activeClip = clip;
     this.modal.toggleModal('editClip');
   }
 
-  openDeleteModal($event: Event, clip: IClip): void {
+  openDeleteModal($event: Event, clip: Image): void {
     $event.preventDefault();
     this.activeClip = clip;
     this.modal.toggleModal('deleteClip');
   }
 
-  update($event: IClip): void {
+  update($event: Image): void {
     this.clips.forEach((element, index) => {
       if (element.docID == $event.docID) {
         this.clips[index].title = $event.title;

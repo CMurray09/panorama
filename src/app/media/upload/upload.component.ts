@@ -3,13 +3,12 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask} from "@angular/fire/compat/storage";
 // @ts-ignore
 import { v4 as uuidv4 } from 'uuid';
-import {switchMap} from 'rxjs/operators';
 import {AngularFireAuth} from "@angular/fire/compat/auth";
 import firebase from 'firebase/compat/app';
 import {ClipService} from "src/app/services/clip.service";
 import {Router} from '@angular/router';
-import {combineLatest, forkJoin} from 'rxjs';
-import IClip from "../../models/clip.model";
+import {combineLatest} from 'rxjs';
+import Image from "../../models/clip.model";
 import {DocumentReference} from "@angular/fire/compat/firestore";
 import {FfmpegService} from "../../services/ffmpeg.service";
 import {NgxFileDropEntry} from "ngx-file-drop";
@@ -32,7 +31,12 @@ export class UploadComponent implements OnDestroy {
   user: firebase.User | null = null;
   task?: AngularFireUploadTask;
   image: string = '';
-  screenshotTask?: AngularFireUploadTask;
+  imageTask: AngularFireUploadTask | undefined;
+
+  currentFileCount: number = 0;
+  totalFileCount: number = 0;
+  formData = new FormData()
+
 
   public files: NgxFileDropEntry[] = [];
 
@@ -64,8 +68,9 @@ export class UploadComponent implements OnDestroy {
   }
 
 
-  async dropped(files: NgxFileDropEntry[]) {
+  public dropped(files: NgxFileDropEntry[]) {
     this.files = files;
+    this.totalFileCount = 0;
     for (const droppedFile of files) {
       // Is it a single file?
       if (droppedFile.fileEntry.isFile) {
@@ -75,31 +80,17 @@ export class UploadComponent implements OnDestroy {
           if (!file.type.includes('image/')) {
             this.showAlert = true;
             this.alertMsg = 'The dropped file is not an image'
-            this.files = [];
             return;
           }
+          this.formData.append('logo', file, droppedFile.relativePath);
+          this.totalFileCount++;
 
-          this.title.setValue(file.name.replace(/\.[^/.]+$/, ''));
+          // this.title.setValue(file.name.replace(/\.[^/.]+$/, ''));
           this.isMediaDropped = true;
 
           // Here you can access the real file
           console.log(droppedFile.relativePath, file);
 
-          /**
-           // You could upload it like this:
-           const formData = new FormData()
-           formData.append('logo', file, relativePath)
-
-           // Headers
-           const headers = new HttpHeaders({
-            'security-token': 'mytoken'
-          })
-
-           this.http.post('https://mybackend.com/api/upload/sanitize-and-save-logo', formData, { headers: headers, responseType: 'blob' })
-           .subscribe(data => {
-            // Sanitized logo returned from backend
-          })
-           **/
 
         });
       } else {
@@ -109,81 +100,69 @@ export class UploadComponent implements OnDestroy {
         return;
       }
     }
+    console.log(this.files.length)
   }
 
-  async uploadFile(file: File): Promise<void> {
+  async uploadFile(): Promise<void> {
     this.mediaForm.disable();
     this.showAlert = true;
     this.alertColour = 'blue';
     this.alertMsg = 'Please wait! Your clip is being uploaded.';
     this.inSubmission = true;
     this.showPercentage = true;
-    const title: string = this.title.value;
-    const clipFileName: string = uuidv4();
-    const clipPath: string = `clips/${clipFileName}.mp4`;
-    const screenshotBlob: Blob = await this.ffmpegService.blobFromURL(
-      this.image
-    );
-    const screenshotPath: string = `screenshots/${clipFileName}.png`;
 
-    this.task = this.storage.upload(clipPath, this.file);
-    const clipRef: AngularFireStorageReference = this.storage.ref(clipPath);
+    for (const file of this.files) {
+      const title: string = this.title.value;
+      const imageFileName: string = uuidv4();
+      const image: string = await this.ffmpegService.createBlob(file);
+      const imageBlob: Blob = await this.ffmpegService.blobFromURL(image);
+      const imagePath: string = `images/${imageFileName}.png`;
 
-    this.screenshotTask = this.storage.upload(screenshotPath, screenshotBlob);
-    const screenshotRef: AngularFireStorageReference = this.storage.ref(screenshotPath);
+      this.imageTask = this.storage.upload(imagePath, imageBlob);
+      const imageRef: AngularFireStorageReference = this.storage.ref(imagePath);
 
-    combineLatest([
-      this.task.percentageChanges(),
-      this.screenshotTask.percentageChanges()
-    ]).subscribe((progress) => {
-      const [clipProgress, screenshotProgress]: Array<number | undefined> = progress;
-      if (!clipProgress || !screenshotProgress) {
-        return;
-      }
-      const total: number = clipProgress + screenshotProgress;
-      this.percentage = total as number / 200;
-    });
-
-    forkJoin([
-      this.task.snapshotChanges(),
-      this.screenshotTask.snapshotChanges()
-    ]).pipe(
-      switchMap(() => forkJoin([
-        clipRef.getDownloadURL(),
-        screenshotRef.getDownloadURL()
-      ]))
-    ).subscribe({
-      next: async (urls) => {
-        const [clipURL, screenshotURL]: Array<string> = urls;
-        const clip: IClip = {
-          uid: this.user?.uid as string,
-          displayName: this.user?.displayName as string,
-          title,
-          fileName: `${clipFileName}.mp4`,
-          url: clipURL,
-          screenshotURL,
-          screenshotFileName: `${clipFileName}.png`,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      combineLatest([
+        this.imageTask.percentageChanges()
+      ]).subscribe((progress) => {
+        const imageProgress: any = progress;
+        if (!imageProgress) {
+          return;
         }
-        const clipDocRef: DocumentReference<IClip> = await this.clipsService.createClip(clip);
-        this.alertColour = 'green';
-        this.alertMsg = 'Success! Your clip is now ready to share with the world.';
-        this.showPercentage = false;
+        this.percentage = imageProgress as number / 100;
+      });
 
-        setTimeout(() => {
-          this.router.navigate([
-            'clip', clipDocRef.id
-          ])
-        }, 1000)
-      },
-      error: (error) => {
-        this.mediaForm.enable();
-        this.alertColour = 'red';
-        this.alertMsg = 'Upload failed! Please try again later.';
-        this.showPercentage = false;
-        this.inSubmission = true;
-        console.error(error);
-      }
-    });
+      imageRef.getDownloadURL().subscribe({
+        next: async (url) => {
+          const imageURL: string = url;
+          const image: Image = {
+            uid: this.user?.uid as string,
+            displayName: this.user?.displayName as string,
+            title,
+            fileName: `${imageFileName}.png`,
+            url: imageURL,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          }
+          const clipDocRef: DocumentReference<Image> = await this.clipsService.createClip(image);
+          this.alertColour = 'green';
+          this.alertMsg = 'Success! Your clip is now ready to share with the world.';
+          this.showPercentage = false;
+
+          setTimeout(() => {
+            this.router.navigate([
+              'image', clipDocRef.id
+            ])
+          }, 1000)
+        },
+        error: (error) => {
+          this.mediaForm.enable();
+          this.alertColour = 'red';
+          this.alertMsg = 'Upload failed! Please try again later.';
+          this.showPercentage = false;
+          this.inSubmission = true;
+          console.error(error);
+        }
+      });
+
+    }
   }
 }
