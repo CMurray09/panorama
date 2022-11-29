@@ -19,7 +19,7 @@
             </thead>
             <tbody class="upload-name-style">
             <tr *ngFor="let item of files; let i=index">
-              <td><strong>{{ item }}</strong></td>
+              <td><strong>{{ item.name }}</strong></td>
             </tr>
             </tbody>
           </table>
@@ -29,7 +29,7 @@
       <!-- Image Editor -->
         <app-alert *ngIf="showAlert" [colour]="alertColour" class="mt-4">
           <p>{{ alertMsg }}</p>
-          <p *ngIf="showPercentage">{{ currentFileCount / totalFileCount }} {{ percentage | percent }}</p>
+          <p *ngIf="showPercentage">{{ percentage | percent }}</p>
         </app-alert>
         <!-- Form -->
         <form [formGroup]="mediaForm" (ngSubmit)="uploadFile()">
