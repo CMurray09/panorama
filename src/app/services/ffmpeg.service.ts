@@ -24,7 +24,7 @@ export class FfmpegService {
   }
 
   async getScreenshot(file: File): Promise<string> {
-    const screenshotBlob = new Blob([file], {type: "image/jpg"});
+    const screenshotBlob = new Blob([file], {type: file.type});
     return URL.createObjectURL(screenshotBlob);
   }
 
