@@ -11,7 +11,7 @@ const routes: Routes = [
     component: ImageViewerComponent
   },
   {
-    path: 'clip/:id',
+    path: 'image/:id',
     component: ClipComponent,
     resolve: {
       clip: ClipService

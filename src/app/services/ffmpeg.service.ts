@@ -23,7 +23,7 @@ export class FfmpegService {
     this.isReady = true;
   }
 
-  async getScreenshot(file: File): Promise<string> {
+  async getImage(file: File): Promise<string> {
     const screenshotBlob = new Blob([file], {type: file.type});
     return URL.createObjectURL(screenshotBlob);
   }

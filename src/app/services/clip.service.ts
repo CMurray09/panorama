@@ -29,7 +29,7 @@ export class ClipService implements Resolve<Image | null> {
     this.imageCollection = db.collection('images')
   }
 
-  createClip(data: Image): Promise<DocumentReference<Image>> {
+  createImage(data: Image): Promise<DocumentReference<Image>> {
     return this.imageCollection.add(data);
   }
 

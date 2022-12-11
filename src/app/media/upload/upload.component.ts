@@ -31,10 +31,8 @@ export class UploadComponent implements OnDestroy {
   user: firebase.User | null = null;
   task?: AngularFireUploadTask;
   image: string = '';
-  imageTask: AngularFireUploadTask | undefined;
-  screenshotTask?: AngularFireUploadTask;
+  imageTask?: AngularFireUploadTask;
 
-  screenshots: Array<string> = [];
   imageType: string = 'image/png';
 
   images: Array<string> = [];
@@ -68,7 +66,7 @@ export class UploadComponent implements OnDestroy {
   constructor(
     private storage: AngularFireStorage,
     private auth: AngularFireAuth,
-    private clipsService: ClipService,
+    private imageService: ClipService,
     private router: Router,
     public ffmpegService: FfmpegService) {
     auth.user.subscribe(user => this.user = user);
@@ -97,7 +95,7 @@ export class UploadComponent implements OnDestroy {
         invalid = false;
         this.files.push(file);
         this.imageType = file.type;
-        this.screenshots.push(await this.ffmpegService.getScreenshot(file));
+        this.images.push(await this.ffmpegService.getImage(file));
       });
     } else {
       this.showAlert = true;
@@ -130,54 +128,54 @@ export class UploadComponent implements OnDestroy {
     this.mediaForm.disable();
     this.showAlert = true;
     this.alertColour = 'blue';
-    this.alertMsg = 'Please wait! Your clip is being uploaded.';
+    this.alertMsg = 'Please wait! Your image is being uploaded.';
     this.inSubmission = true;
     this.showPercentage = true;
     const title: string = this.title.value;
     const author: string = this.author.value;
-    const clipFileName: string = uuidv4();
+    const imageFileName: string = uuidv4();
 
-    const screenshotBlob: Blob = await this.ffmpegService.blobFromURL(
-      this.screenshots[0]
+    const imageBlob: Blob = await this.ffmpegService.blobFromURL(
+      this.images[0]
     );
-    const screenshotPath: string = `screenshots/${clipFileName}.${this.imageType}`;
+    const imagePath: string = `images/${imageFileName}.${this.imageType}`;
 
-    this.screenshotTask = this.storage.upload(screenshotPath, screenshotBlob);
-    const screenshotRef: AngularFireStorageReference = this.storage.ref(screenshotPath);
+    this.imageTask = this.storage.upload(imagePath, imageBlob);
+    const imageRef: AngularFireStorageReference = this.storage.ref(imagePath);
 
-      this.screenshotTask.percentageChanges().subscribe((progress) => {
-      const screenshotProgress: number | undefined = progress;
-      if (!screenshotProgress) {
+      this.imageTask.percentageChanges().subscribe((progress) => {
+      const imageProgress: number | undefined = progress;
+      if (!imageProgress) {
         return;
       }
-      this.percentage = screenshotProgress as number / 100;
+      this.percentage = imageProgress as number / 100;
     });
 
     forkJoin([
-      this.screenshotTask.snapshotChanges()
+      this.imageTask.snapshotChanges()
     ]).pipe(
       switchMap(() => forkJoin([
-        screenshotRef.getDownloadURL()
+        imageRef.getDownloadURL()
       ]))
     ).subscribe({
       next: async (urls) => {
-        const screenshotURL: any = urls;
-        const clip: Image = {
+        const imageURL: any = urls;
+        const image: Image = {
           uid: this.user?.uid as string,
           displayName: author ? author : this.user?.displayName as string,
           title,
-          fileName: `${clipFileName}.jpg`,
-          url: screenshotURL,
+          fileName: `${imageFileName}.jpg`,
+          url: imageURL,
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         }
-        const clipDocRef: DocumentReference<Image> = await this.clipsService.createClip(clip);
+        const imageDocRef: DocumentReference<Image> = await this.imageService.createImage(image);
         this.alertColour = 'green';
-        this.alertMsg = 'Success! Your clip is now ready to share with the world.';
+        this.alertMsg = 'Success! Your image is now ready to share with the world.';
         this.showPercentage = false;
 
         setTimeout(() => {
           this.router.navigate([
-            'clip', clipDocRef.id
+            'image', imageDocRef.id
           ])
         }, 1000)
       },
