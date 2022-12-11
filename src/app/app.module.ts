@@ -9,15 +9,24 @@ import { environment } from "src/environments/environment";
 import {AngularFireAuthModule} from "@angular/fire/compat/auth";
 import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
 import {AngularFireStorageModule} from "@angular/fire/compat/storage";
+import { ToastrModule } from "ngx-toastr";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ImageViewerComponent} from "./image-viewer/image-viewer.component";
-import {NavComponent} from "./nav/nav/nav.component";
+import {ClipComponent} from "./clip/clip.component";
+import {NotFoundComponent} from "./not-found/not-found.component";
+import {ClipsListComponent} from "./clips-list/clips-list.component";
+import {FbTimestampPipe} from "./pipes/fb-timestamp.pipe";
+import {NavComponent} from "./nav/nav.component";
 
 @NgModule({
   declarations: [
     AppComponent,
+    NavComponent,
     ImageViewerComponent,
-    NavComponent
+    ClipComponent,
+    NotFoundComponent,
+    ClipsListComponent,
+    FbTimestampPipe
   ],
   imports: [
     BrowserModule,
@@ -28,6 +37,10 @@ import {NavComponent} from "./nav/nav/nav.component";
     AppRoutingModule,
     AngularFireStorageModule,
     BrowserAnimationsModule,
+    ToastrModule.forRoot({
+      positionClass: 'toast-bottom-center',
+      preventDuplicates: true
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]
