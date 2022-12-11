@@ -175,7 +175,7 @@ export class UploadComponent implements OnDestroy {
 
         setTimeout(() => {
           this.router.navigate([
-            'image', imageDocRef.id
+            'pannellum', imageDocRef.id
           ])
         }, 1000)
       },

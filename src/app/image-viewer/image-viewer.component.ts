@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {ClipService} from "../services/clip.service";
 
 @Component({
   selector: 'app-image-viewer',
@@ -7,9 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ImageViewerComponent implements OnInit {
 
-  constructor() { }
+  constructor(public imageService: ClipService) {
+    this.imageService.getClips();
+  }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
   }
 
 }

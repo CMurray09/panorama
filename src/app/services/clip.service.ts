@@ -8,7 +8,7 @@ import {
 import Image from "src/app/models/clip.model";
 import {AngularFireAuth} from '@angular/fire/compat/auth';
 import {switchMap, map} from 'rxjs/operators';
-import {of, BehaviorSubject, combineLatest, lastValueFrom, Observable} from 'rxjs';
+import {of, BehaviorSubject, combineLatest, lastValueFrom, Observable, Subscription} from 'rxjs';
 import {AngularFireStorage, AngularFireStorageReference} from "@angular/fire/compat/storage";
 import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot, Router} from "@angular/router";
 import firebase from "firebase/compat/app";
@@ -31,6 +31,10 @@ export class ClipService implements Resolve<Image | null> {
 
   createImage(data: Image): Promise<DocumentReference<Image>> {
     return this.imageCollection.add(data);
+  }
+
+  getUploadedImage(id: string): Observable<firebase.firestore.DocumentSnapshot<Image>> {
+    return this.imageCollection.doc(id).get();
   }
 
   getUserClips(sort$: BehaviorSubject<string>): Observable<QueryDocumentSnapshot<Image>[]> {
