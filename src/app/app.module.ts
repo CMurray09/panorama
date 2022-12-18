@@ -18,6 +18,7 @@ import {ClipsListComponent} from "./clips-list/clips-list.component";
 import {FbTimestampPipe} from "./pipes/fb-timestamp.pipe";
 import {NavComponent} from "./nav/nav.component";
 import { PannellumComponent } from './pannellum/pannellum.component';
+import {SharedModule} from "./shared/shared.module";
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { PannellumComponent } from './pannellum/pannellum.component';
     ToastrModule.forRoot({
       positionClass: 'toast-bottom-center',
       preventDuplicates: true
-    })
+    }),
+    SharedModule
   ],
   providers: [],
   bootstrap: [AppComponent]
