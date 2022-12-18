@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {ClipService} from "../services/clip.service";
-import { Clipboard } from '@angular/cdk/clipboard';
 
 @Component({
   selector: 'app-pannellum',
@@ -11,11 +10,11 @@ import { Clipboard } from '@angular/cdk/clipboard';
 export class PannellumComponent implements OnInit {
   imageURL: string | undefined;
   image: any;
+  showTip: boolean = false;
 
   constructor(
     public route: ActivatedRoute,
-    private imageService: ClipService,
-    private clipboard: Clipboard) { }
+    private imageService: ClipService) { }
 
   async ngOnInit(): Promise<void> {
     const docID = this.route.snapshot.paramMap.get('id');
@@ -30,7 +29,11 @@ export class PannellumComponent implements OnInit {
 
   copyLink() {
     if (this.imageURL){
-      // this.clipboard.writeText(this.imageURL);
+      navigator.clipboard.writeText(this.imageURL);
+      this.showTip = true;
+      setTimeout(() => {
+        this.showTip = false;
+      }, 3000);
     }
   }
 
