@@ -1,18 +1,23 @@
-<h1>Image URL:</h1>
+<section id="pannellum" class="w-full pt-6">
+  <h1 class="text-white text-center m-3">Steps written here</h1>
+    <div class="copy-container row w-fit m-auto">
+      <input value="{{imageURL}}" class="col h-8">
+      <app-tooltip [showTip]="showTip">
+      <button (click)="copyLink()"
+              class="col ml-3 w-fit bg-slate-600 text-white py-1.5 px-3 rounded transition
+                hover:bg-slate-500 disabled:opacity-50 disabled:bg-slate-600">
+        Copy Link
+      </button>
+      </app-tooltip>
+    </div>
 
-<a href="https://pannellum.org/documentation/overview/tutorial/">
-  <button>Open Pannellum For Upload</button>
-</a>
-
-<app-tooltip [showTip]="showTip">
-  <div class="copy-container">
-    <input value="{{imageURL}}">
-    <button (click)="copyLink()"
-            class="block w-full bg-indigo-400 text-white py-1.5 px-3 rounded transition
-                  hover:bg-indigo-500 disabled:opacity-50 disabled:bg-indigo-400">
-      Copy Link
-    </button>
+  <div class="w-full text-center mt-6">
+    <a href="https://pannellum.org/documentation/overview/tutorial/" class="col text-white block m-auto w-72 bg-teal-800 text-white py-1.5 px-3 rounded transition
+                  hover:bg-teal-700 disabled:opacity-50 disabled:bg-teal-600">
+      Open Pannellum For Upload
+    </a>
   </div>
-</app-tooltip>
 
 
+
+</section>
