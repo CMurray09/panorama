@@ -22,3 +22,7 @@ hr {
   margin: auto auto;
   width: 415px;
 }
+
+.full-width {
+  width: 450px;
+}
