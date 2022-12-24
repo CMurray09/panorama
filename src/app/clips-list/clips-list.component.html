@@ -1,1 +1,9 @@
-<p>clips-list works!</p>
+<!-- Main Content -->
+<section class="container mx-auto my-8 bg-secondary p-6">
+  <div class="rounded relative flex flex-col h-full">
+    <ng-container *ngFor="let image of imageService.pageClips">
+    <img src="{{ image.url }}">
+
+    </ng-container>
+  </div>
+</section>
