@@ -20,6 +20,7 @@ import {NavComponent} from "./nav/nav.component";
 import { PannellumComponent } from './pannellum/pannellum.component';
 import {SharedModule} from "./shared/shared.module";
 import {FormsModule} from "@angular/forms";
+import {MediaModule} from "./media/media.module";
 
 @NgModule({
   declarations: [
@@ -32,22 +33,23 @@ import {FormsModule} from "@angular/forms";
     FbTimestampPipe,
     PannellumComponent
   ],
-  imports: [
-    BrowserModule,
-    UserModule,
-    AngularFireModule.initializeApp(environment.firebase),
-    AngularFireAuthModule,
-    AngularFirestoreModule,
-    AppRoutingModule,
-    AngularFireStorageModule,
-    BrowserAnimationsModule,
-    ToastrModule.forRoot({
-      positionClass: 'toast-bottom-center',
-      preventDuplicates: true
-    }),
-    SharedModule,
-    FormsModule
-  ],
+    imports: [
+        BrowserModule,
+        UserModule,
+        AngularFireModule.initializeApp(environment.firebase),
+        AngularFireAuthModule,
+        AngularFirestoreModule,
+        AppRoutingModule,
+        AngularFireStorageModule,
+        BrowserAnimationsModule,
+        ToastrModule.forRoot({
+            positionClass: 'toast-bottom-center',
+            preventDuplicates: true
+        }),
+        SharedModule,
+        FormsModule,
+        MediaModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })
