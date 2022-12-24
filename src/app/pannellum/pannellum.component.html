@@ -34,17 +34,17 @@
     <hr>
   </div>
 
-  <form>
+  <form #uploadForm="ngForm" (ngSubmit)="uploadNewLink()">
     <div class="row w-fit m-auto">
-      <input placeholder="Uploaded URL" class="col h-8">
-      <button (click)="copyLink()"
+      <input #url="ngModel" type="text" name="url" [(ngModel)]="uploadURL"
+             placeholder="Uploaded URL" class="col h-8" required>
+      <button type="submit" [disabled]="uploadForm.invalid"
               class="col ml-3 sideButton text-white w-fit bg-teal-800 text-white py-1.5 px-3 rounded transition
               hover:bg-teal-700 disabled:opacity-50 disabled:bg-teal-600">
         Submit
       </button>
+      <p *ngIf="error" class="text-red-400">{{ errorMessage }}</p>
     </div>
   </form>
-
-
 
 </section>

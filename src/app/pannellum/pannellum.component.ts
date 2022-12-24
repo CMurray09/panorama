@@ -11,6 +11,9 @@ export class PannellumComponent implements OnInit {
   imageURL: string | undefined;
   image: any;
   showTip: boolean = false;
+  uploadURL: string = '';
+  errorMessage: string = '';
+  error: boolean = false;
 
   constructor(
     public route: ActivatedRoute,
@@ -34,6 +37,20 @@ export class PannellumComponent implements OnInit {
       setTimeout(() => {
         this.showTip = false;
       }, 3000);
+    }
+  }
+
+  uploadNewLink() {
+    this.uploadURL = this.uploadURL.trim();
+    if (!this.uploadURL) {
+      this.errorMessage = 'Upload URL is required.';
+      this.error = true;
+      return;
+    }
+    if (this.uploadURL.includes('cdn.pannellum.org')) {
+      this.errorMessage = 'Incorrect Pannellum URL';
+      this.error = true;
+      return;
     }
   }
 

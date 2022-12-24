@@ -19,6 +19,7 @@ import {FbTimestampPipe} from "./pipes/fb-timestamp.pipe";
 import {NavComponent} from "./nav/nav.component";
 import { PannellumComponent } from './pannellum/pannellum.component';
 import {SharedModule} from "./shared/shared.module";
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import {SharedModule} from "./shared/shared.module";
       positionClass: 'toast-bottom-center',
       preventDuplicates: true
     }),
-    SharedModule
+    SharedModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
