@@ -59,9 +59,9 @@ export class ClipService implements Resolve<Image | null> {
     )
   }
 
-  updateClip(id: string, title: string): Promise<void>{
+  updateClip(id: string, pannellum: string): Promise<void>{
     return this.imageCollection.doc(id).update({
-      title
+      pannellum
     });
   }
 

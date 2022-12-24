@@ -8,4 +8,5 @@ export default interface Image {
   fileName: string;
   url: string;
   timestamp: firebase.firestore.FieldValue;
+  pannellum: string;
 }

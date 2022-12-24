@@ -166,7 +166,8 @@ export class UploadComponent implements OnDestroy {
           title,
           fileName: `${imageFileName}.jpg`,
           url: imageURL,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          pannellum: ''
         }
         const imageDocRef: DocumentReference<Image> = await this.imageService.createImage(image);
         this.alertColour = 'green';
