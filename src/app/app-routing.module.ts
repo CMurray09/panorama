@@ -4,6 +4,7 @@ import { ClipComponent } from "./clip/clip.component";
 import {NotFoundComponent} from "./not-found/not-found.component";
 import { ClipService } from "./services/clip.service";
 import {ImageViewerComponent} from "./image-viewer/image-viewer.component";
+import {PannellumComponent} from "./pannellum/pannellum.component";
 
 const routes: Routes = [
   {
@@ -13,6 +14,13 @@ const routes: Routes = [
   {
     path: 'image/:id',
     component: ClipComponent,
+    resolve: {
+      clip: ClipService
+    }
+  },
+  {
+    path: 'pannellum/:id',
+    component: PannellumComponent,
     resolve: {
       clip: ClipService
     }

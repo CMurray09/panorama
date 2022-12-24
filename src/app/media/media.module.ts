@@ -13,19 +13,22 @@ import {NgxFileDropModule} from "ngx-file-drop";
 
 
 @NgModule({
-  declarations: [
-    ManageComponent,
-    UploadComponent,
-    EditComponent,
-    SafeURLPipe,
-    DeleteComponent
-  ],
-  imports: [
-    CommonModule,
-    MediaRoutingModule,
-    SharedModule,
-    ReactiveFormsModule,
-    NgxFileDropModule
-  ]
+    declarations: [
+        ManageComponent,
+        UploadComponent,
+        EditComponent,
+        SafeURLPipe,
+        DeleteComponent
+    ],
+    exports: [
+        SafeURLPipe
+    ],
+    imports: [
+        CommonModule,
+        MediaRoutingModule,
+        SharedModule,
+        ReactiveFormsModule,
+        NgxFileDropModule
+    ]
 })
 export class MediaModule { }
