@@ -2,13 +2,13 @@
   opacity: 0.5;
 }
 
-.details-container {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 50%;
-  opacity: 0;
-}
+/*.details-container {*/
+/*  position: absolute;*/
+/*  left: 50%;*/
+/*  transform: translateX(-50%);*/
+/*  top: 50%;*/
+/*  opacity: 0;*/
+/*}*/
 
 .image-container:hover .details-container {
   opacity: 1;
