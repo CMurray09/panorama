@@ -52,7 +52,6 @@ export class UploadComponent implements OnDestroy {
 
   author = new FormControl('', {
     validators: [
-      Validators.required,
       Validators.minLength(3),
       Validators.maxLength(50)
     ],
@@ -125,14 +124,22 @@ export class UploadComponent implements OnDestroy {
   }
 
   async uploadFile(): Promise<void> {
+    const title: string = this.title.value.trim();
+    const author: string = this.author.value.trim();
+
+    if (!title) {
+      this.alertColour = 'red';
+      this.alertMsg = 'Your image requires a title.';
+      this.showAlert = true;
+      return;
+    }
+
     this.mediaForm.disable();
     this.showAlert = true;
     this.alertColour = 'blue';
     this.alertMsg = 'Please wait! Your image is being uploaded.';
     this.inSubmission = true;
     this.showPercentage = true;
-    const title: string = this.title.value;
-    const author: string = this.author.value;
     const imageFileName: string = uuidv4();
 
     const imageBlob: Blob = await this.ffmpegService.blobFromURL(
@@ -162,8 +169,9 @@ export class UploadComponent implements OnDestroy {
         const imageURL: any = urls;
         const image: Image = {
           uid: this.user?.uid as string,
-          displayName: author ? author : this.user?.displayName as string,
+          displayName: this.user?.displayName as string,
           title,
+          author,
           fileName: `${imageFileName}.jpg`,
           url: imageURL,
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),

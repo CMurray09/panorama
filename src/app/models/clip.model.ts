@@ -5,6 +5,7 @@ export default interface Image {
   uid: string;
   displayName: string;
   title: string;
+  author: string;
   fileName: string;
   url: string;
   timestamp: firebase.firestore.FieldValue;
