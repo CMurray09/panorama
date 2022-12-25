@@ -1,0 +1,20 @@
+<!-- Edit Modal -->
+<app-modal modalID="deleteClip">
+  <p class="text-2xl font-bold">Delete Video</p>
+
+  <app-alert *ngIf="showAlert" [colour]="alertColour">
+    <p>{{ alertMsg }}</p>
+  </app-alert>
+
+  <!-- Title -->
+  <div class="mt-4">
+    <label class="block text-xl mb-4 text-red-700">Are you sure you want to delete the video?</label>
+    <h1 class="text-xl">{{ videoTitle }}</h1>
+  </div>
+
+  <div class="mt-4 text-right">
+    <button (click)="deleteClip($event)" type="submit" class="h-10 px-5 m-2 text-red-100 transition-colors duration-150 bg-red-700 rounded-lg focus:shadow-outline hover:bg-red-800">
+      Delete
+    </button>
+  </div>
+</app-modal>

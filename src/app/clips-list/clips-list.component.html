@@ -1,0 +1,14 @@
+<!-- Main Content -->
+<section class="container mx-auto my-8 bg-secondary p-6">
+  <div class="rounded relative flex flex-col h-full">
+    <ng-container *ngFor="let image of imageService.pageClips">
+      <a [routerLink]="['/image/', image.docID]" class="relative image-container">
+        <img src="{{ image.url }}" class="mt-6 panorama-image">
+<!--        <span class="details-container">-->
+<!--          <p class="text-white">{{ image.title }}</p>-->
+<!--          <p class="text-white">Author: {{ image.author ? image.author : image.displayName }}</p>-->
+<!--        </span>-->
+      </a>
+    </ng-container>
+  </div>
+</section>
