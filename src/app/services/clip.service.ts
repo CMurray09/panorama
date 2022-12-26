@@ -80,7 +80,7 @@ export class ClipService implements Resolve<Image | null> {
     }
     this.pendingReq = true;
     let query: firebase.firestore.Query<Image> =
-      this.imageCollection.ref.orderBy('timestamp', 'desc').limit(6);
+      this.imageCollection.ref.orderBy('timestamp', 'desc');
     const { length }: Image[] = this.pageClips;
 
     if (length) {
